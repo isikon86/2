@@ -22,6 +22,8 @@ client_scripts {
     'client/main.lua',
     'client/weather.lua',
     'client/zombies.lua',
+    'client/ghosts.lua',
+    'client/ghost_train.lua',
     'client/tier_combat.lua',
     'client/loot.lua',
     'client/sounds.lua',
@@ -30,6 +32,7 @@ client_scripts {
 server_scripts {
     'server/bridge.lua',
     'server/main.lua',
+    'server/ghosts.lua',
     'server/city_population.lua',
 }
 

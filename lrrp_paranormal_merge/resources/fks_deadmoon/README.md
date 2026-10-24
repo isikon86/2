@@ -66,6 +66,14 @@
 
 # FKS Dead Moon
 
+## Paranormal merge integration
+
+This bundled build also contains `client/ghosts.lua`, `client/ghost_train.lua` and
+`server/ghosts.lua`. Ghost bosses run only while `GlobalState.fksDeadmoonWeather`
+is active (the seventh-game-day red-fog event), the native ghost train runs from
+00:00 to 03:00 every night, and the two `ricx_ghostship` coordinates are registered
+as compact city-style dungeon zones in `Config.CitySpawns.zones`.
+
 A Halloween zombie night for **RedM**. On every seventh tracked in-game day, between **22:00 and 06:00** (in-game time), the red fog event rolls in
 and the dead rise around the players: shamblers and runners that only die to a **headshot**, random **hordes**, bodies to **search** for loot and **safe zones** where nothing spawns. This TEOT build has no scripted bleeding or medical effects.
 

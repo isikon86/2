@@ -434,3 +434,51 @@ Config.SafeZones = {
         },
     },
 }
+
+---------------------------------------------------------------------------
+-- Paranormal merge: ghost bosses and the nightly ghost train
+---------------------------------------------------------------------------
+-- Ghost bosses are active only while fksDeadmoonWeather is true. In the
+-- supplied schedule this is the red-fog window on every seventh game day
+-- (22:00-06:00, including the midnight boundary).
+Config.GhostBosses = {
+    enabled = true,
+    requireSeventhDayEvent = true,
+    spawnDistance = 110.0,
+    despawnDistance = 165.0,
+    bosses = {
+        {
+            id = 'mary',
+            name = 'Mary Hargrove',
+            model = 'A_F_M_BHT_GHOST_01',
+            coords = vector3(2945.2383, 517.5995, 45.3310),
+            heading = 11.8799,
+            health = 1200,
+        },
+        {
+            id = 'ferryman',
+            name = 'The Ferryman',
+            model = 'A_M_M_BHT_GHOST_01',
+            coords = vector3(504.0, -1585.0, 39.0),
+            heading = 180.0,
+            health = 1500,
+        },
+    },
+}
+
+-- The original GhostTrainOdds file is a Windows ASI and has no readable Lua
+-- route. This is the RedM-native replacement. The first point must be on a
+-- valid rail; the train is active every night from 00:00 through 03:00.
+Config.GhostTrain = {
+    enabled = true,
+    startHour = 0,
+    endHour = 3,
+    variation = 0,
+    direction = true,
+    cruiseSpeed = 8.0,
+    respawnDistance = 35.0,
+    route = {
+        vector3(-1088.0, -556.0, 81.0),
+        vector3(1248.0, -1297.0, 76.0),
+    },
+}
