@@ -58,7 +58,9 @@ local function createGhostFromModels(models, coords, heading)
     for _, name in ipairs(models) do
         local hash = loadModel({ name })
         if hash then
-            local ped = createGhostPed(hash, coords, heading)
+            -- Same creation path as the working zombie Spawn() function.
+            local ped = CreatePed(hash, coords.x, coords.y, coords.z,
+                heading or math.random(0, 359) + 0.0, true, true, false, false)
             SetModelAsNoLongerNeeded(hash)
             if ped and ped ~= 0 and DoesEntityExist(ped) then
                 return ped, hash, name
