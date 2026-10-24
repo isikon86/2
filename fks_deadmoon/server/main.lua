@@ -404,14 +404,19 @@ RegisterCommand(Config.Command, function(src, args)
 
     if a == 'ghost' or a == 'ghosts' then
         local mode = (args[2] or 'auto'):lower()
-        if mode == 'on' then
+        if mode == 'test' then
+            local id = args[3]
+            TriggerClientEvent('fks-deadmoon:client:ghostTest', src, id)
+            return Reply(src, ('ghost test: %s'):format(id or 'first boss'))
+        elseif mode == 'on' then
             weatherForced = true
         elseif mode == 'off' then
             weatherForced = false
         elseif mode == 'auto' then
             weatherForced = nil
+            TriggerClientEvent('fks-deadmoon:client:ghostTestClear', src)
         else
-            return Reply(src, '/deadmoon ghost on | off | auto')
+            return Reply(src, '/deadmoon ghost on | off | auto | test [id]')
         end
         TickWeather()
         return Reply(src, ('ghost event: %s'):format(weatherForced == nil and 'auto' or (weatherForced and 'on' or 'off')))

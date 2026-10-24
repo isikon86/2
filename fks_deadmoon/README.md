@@ -17,6 +17,9 @@ ensure fks_deadmoon
 The Gallows Miner, The Blackwater Drifter, The Red Ridge Preacher, The Drowned Bride и
 The Tumbleweed Watchman. Шесть новых имён и их легенды — авторская часть объединённого ресурса.
 
+Для диагностики конкретного педа администратор может выполнить `/deadmoon ghost test ferryman`.
+Босс появится прямо возле текущего игрока; команда `/deadmoon ghost auto` отключает тестовый режим.
+
 - `client/ghosts.lua` — боссы-призраки во время события 7-го игрового дня;
 - `client/ghost_train.lua` — поезд с 00:00 до 03:00 каждой ночи;
 - `client/ghost_ship.lua` — объекты кораблей;

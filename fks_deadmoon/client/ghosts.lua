@@ -6,6 +6,7 @@ local escorts = {}
 local haze = {}
 local defeated = {}
 local spawnBlockedUntil = {}
+local testLocations = {}
 
 local function notify(message)
     if Bridge and Bridge.Notify then
@@ -117,17 +118,21 @@ local function spawnEscort(index, boss, playerPed)
     end
 end
 
-local function spawnBoss(index, boss, playerPed)
+local function spawnBoss(index, boss, playerPed, position)
     local hash, modelName = loadModel(boss.models or boss.model)
     if not hash then
         print(('[fks-deadmoon] ghost model unavailable: %s'):format(tostring(boss.model)))
         return
     end
 
-    local ped = CreatePed(hash, boss.coords.x, boss.coords.y, boss.coords.z,
+    local spawnCoords = position or boss.coords
+    local ped = CreatePed(hash, spawnCoords.x, spawnCoords.y, spawnCoords.z,
         boss.heading or 0.0, true, true, false, false)
     SetModelAsNoLongerNeeded(hash)
-    if not ped or ped == 0 or not DoesEntityExist(ped) then return end
+    if not ped or ped == 0 or not DoesEntityExist(ped) then
+        print(('[fks-deadmoon] CreatePed failed for ghost %s using %s'):format(boss.id, tostring(modelName)))
+        return
+    end
 
     SetEntityAsMissionEntity(ped, true, true)
     if SetEntityVisible then SetEntityVisible(ped, true, false) end
@@ -176,7 +181,8 @@ local function process()
 
     for index, boss in ipairs(G.bosses or {}) do
         local ped = spawned[index]
-        if not active or defeated[index] then
+        local testPosition = testLocations[index]
+        if (not active and not testPosition) or defeated[index] then
             removeEscort(index)
             removeBoss(index)
         elseif ped and DoesEntityExist(ped) then
@@ -192,9 +198,9 @@ local function process()
             end
         elseif not ped then
             if GetGameTimer() >= (spawnBlockedUntil[index] or 0)
-                and #(playerCoords - boss.coords) <= (boss.spawnDistance or 110.0) then
+                and #(playerCoords - (testPosition or boss.coords)) <= (boss.spawnDistance or 110.0) then
                 removeEscort(index)
-                spawnBoss(index, boss, playerPed)
+                spawnBoss(index, boss, playerPed, testPosition)
             end
         elseif not DoesEntityExist(ped) then
             -- The boss can disappear during model/streaming cleanup. Always
@@ -202,8 +208,8 @@ local function process()
             removeEscort(index)
             spawned[index] = nil
             spawnBlockedUntil[index] = GetGameTimer() + 10000
-        elseif #(playerCoords - boss.coords) <= (boss.spawnDistance or 110.0) then
-            spawnBoss(index, boss, playerPed)
+        elseif #(playerCoords - (testPosition or boss.coords)) <= (boss.spawnDistance or 110.0) then
+            spawnBoss(index, boss, playerPed, testPosition)
         end
     end
 end
@@ -213,6 +219,27 @@ CreateThread(function()
         process()
         Wait(1000)
     end
+end)
+
+RegisterNetEvent('fks-deadmoon:client:ghostTest', function(id)
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    for index, boss in ipairs(G.bosses or {}) do
+        if not id or id == boss.id then
+            testLocations[index] = playerCoords
+            defeated[index] = nil
+            removeEscort(index)
+            removeBoss(index)
+            print(('[fks-deadmoon] ghost test armed: %s at %.2f %.2f %.2f'):format(
+                boss.id, playerCoords.x, playerCoords.y, playerCoords.z
+            ))
+            return
+        end
+    end
+    print(('[fks-deadmoon] unknown ghost id: %s'):format(tostring(id)))
+end)
+
+RegisterNetEvent('fks-deadmoon:client:ghostTestClear', function()
+    testLocations = {}
 end)
 
 AddStateBagChangeHandler('fksDeadmoonWeather', 'global', function(_, _, value)
