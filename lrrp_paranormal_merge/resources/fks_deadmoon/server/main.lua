@@ -1,6 +1,7 @@
 -- Event state, time source, headshots, tier combat knockdowns and looting.
 
 local forced = nil              -- nil = follow the schedule | true / false = forced by an admin
+local weatherForced = nil       -- nil = follow the seventh-day red-fog schedule
 local clock = { h = nil, m = 0 } -- last clock reported by the clients (fallback when no weathersync export)
 local lootCooldown = {}
 
@@ -276,7 +277,9 @@ local function TickWeather()
     local schedule = Config.Weather and Config.Weather.redFogEvent
     local active = false
 
-    if schedule and schedule.enabled then
+    if weatherForced ~= nil then
+        active = weatherForced
+    elseif schedule and schedule.enabled then
         local h, m = CurrentGameTime()
         if h == nil then return end -- clock still unknown; retry on the next tick
 
@@ -399,9 +402,24 @@ RegisterCommand(Config.Command, function(src, args)
         return TriggerClientEvent('fks-deadmoon:client:testSound', src)
     end
 
+    if a == 'ghost' or a == 'ghosts' then
+        local mode = (args[2] or 'auto'):lower()
+        if mode == 'on' then
+            weatherForced = true
+        elseif mode == 'off' then
+            weatherForced = false
+        elseif mode == 'auto' then
+            weatherForced = nil
+        else
+            return Reply(src, '/deadmoon ghost on | off | auto')
+        end
+        TickWeather()
+        return Reply(src, ('ghost event: %s'):format(weatherForced == nil and 'auto' or (weatherForced and 'on' or 'off')))
+    end
+
     if a == 'on' then forced = true
     elseif a == 'off' then forced = false
-    elseif a == 'auto' then forced = nil
+    elseif a == 'auto' then forced = nil; weatherForced = nil
     elseif a ~= 'status' then return Reply(src, _L('cmd_help')) end
     Tick()
     Status(src)

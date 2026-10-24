@@ -207,6 +207,7 @@ All commands are admin only (VORP group / RSG permission in `Config.AdminGroups`
 | `/deadmoon status` | event state, mode, current time and density |
 | `/deadmoon on` / `off` | force the event on / off (ignores the schedule until `auto`) |
 | `/deadmoon auto` | follow the schedule again |
+| `/deadmoon ghost on` / `off` / `auto` | test or release the seventh-day ghost event; `auto` returns to the schedule |
 | `/deadmoon density <level>` | change the density level in game |
 | `/deadmoon horde [id]` | send a horde to you or to a player (the event must be active) |
 | `/deadmoon sound` | play a groan for you and report whether the sound works |
