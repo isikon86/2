@@ -320,6 +320,12 @@ Config.CitySpawns = {
         { name = 'Annesburg',     coords = vector3(2930.0, 1300.0, 44.0),    radius = 250.0, maxZombies = 42 },
         -- Colter is intentionally NOT a city-spawn zone: it is TEOT's starter survivor camp.
         { name = 'Emerald Ranch', coords = vector3(1416.0, 322.0, 89.0),     radius = 170.0, maxZombies = 28 },
+
+        -- LRRP Paranormal Merge: the two ricx_ghostship locations are staged
+        -- as compact dungeon zones. The initial population is followed by the
+        -- normal Deadmoon city horde cycle after the zone is cleared.
+        { name = 'Ghost Ship North', coords = vector3(506.333, -1585.397, 38.789), radius = 65.0, maxZombies = 16, hordeSize = 12, secondHordeSize = 16 },
+        { name = 'Ghost Ship South', coords = vector3(646.265, -1775.798, 39.839), radius = 65.0, maxZombies = 16, hordeSize = 12, secondHordeSize = 16 },
     },
 }
 
