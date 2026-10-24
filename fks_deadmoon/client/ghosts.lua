@@ -251,15 +251,18 @@ CreateThread(function()
 end)
 
 RegisterNetEvent('fks-deadmoon:client:ghostTest', function(id)
-    local playerCoords = GetEntityCoords(PlayerPedId())
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+    local forward = GetEntityForwardVector(playerPed)
+    local testCoords = vector3(playerCoords.x + forward.x * 4.0, playerCoords.y + forward.y * 4.0, playerCoords.z + 0.5)
     for index, boss in ipairs(G.bosses or {}) do
         if not id or id == boss.id then
-            testLocations[index] = playerCoords
+            testLocations[index] = testCoords
             defeated[index] = nil
             removeEscort(index)
             removeBoss(index)
             print(('[fks-deadmoon] ghost test armed: %s at %.2f %.2f %.2f'):format(
-                boss.id, playerCoords.x, playerCoords.y, playerCoords.z
+                boss.id, testCoords.x, testCoords.y, testCoords.z
             ))
             return
         end
