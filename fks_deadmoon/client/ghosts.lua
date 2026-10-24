@@ -31,13 +31,25 @@ local function loadModel(names)
 end
 
 local function createGhostPed(hash, coords, heading)
-    -- RedM artifacts differ: some accept the model as the first argument,
-    -- while ghost/story peds need the explicit RDR3 pedType (4).
-    local ped = CreatePed(hash, coords.x, coords.y, coords.z,
-        heading or 0.0, true, true, false, false)
-    if ped and ped ~= 0 and DoesEntityExist(ped) then return ped end
-    return CreatePed(4, hash, coords.x, coords.y, coords.z,
-        heading or 0.0, true, true, false, false)
+    -- RedM artifacts expose several RDR3 CreatePed signatures. Try each
+    -- safely so one incompatible native does not abort the ghost thread.
+    local h = heading or 0.0
+    local attempts = {
+        function() return CreatePed(hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
+        function() return CreatePed(4, hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
+        function() return CreatePed(hash, coords.x, coords.y, coords.z, h, false, true, false, false) end,
+        function() return CreatePed(4, hash, coords.x, coords.y, coords.z, h, false, true, false, false) end,
+    }
+    if CreatePed_2 then
+        attempts[#attempts + 1] = function()
+            return CreatePed_2(4, hash, coords.x, coords.y, coords.z, h, true, true, false, false)
+        end
+    end
+    for _, attempt in ipairs(attempts) do
+        local ok, ped = pcall(attempt)
+        if ok and ped and ped ~= 0 and DoesEntityExist(ped) then return ped end
+    end
+    return nil
 end
 
 local function createGhostFromModels(models, coords, heading)
