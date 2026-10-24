@@ -134,6 +134,10 @@ end
 local function processShipDungeons(playerPed, playerCoords)
     local dungeon = Config.ShipDungeon
     if not dungeon.enabled then return end
+    -- fks_deadmoon owns the supplied zombie models, AI, networking, sounds and
+    -- loot. It already runs around every player, including these ship sites.
+    -- Do not create a second incompatible population when it is enabled.
+    if dungeon.useDeadmoon then return end
     for index, center in ipairs(dungeon.centers or {}) do
         local state = shipStates[index]
         if not state then

@@ -4,7 +4,8 @@
 
 - призраки из `LRRP_GhostHunting` выступают как отдельные боссы из `config.lua`;
 - поезд создаётся нативным `CreateMissionTrain` и просто движется по рельсам;
-- координаты `ricx_ghostship` превращены в данжи: после входа идут три волны зомби.
+- координаты `ricx_ghostship` используются как корабельные данжи с вашим `fks_deadmoon`;
+  его модели, AI, сетевое владение, звуки, лут и команды остаются источником зомби.
 
 ## Установка
 
@@ -18,8 +19,13 @@
    ```cfg
    ensure ricx_ghostship
    ensure LRRP_GhostHunting
+   ensure fks_deadmoon
    ensure lrrp_paranormal_merge
    ```
+
+`fks_deadmoon` нужно запускать после фреймворка и инвентаря, но до `lrrp_paranormal_merge`.
+В его `config.lua` сейчас включён круглосуточный режим (`Config.Time.alwaysOn = true`), поэтому
+зомби будут работать и на корабле. Управление: `/deadmoon on`, `/deadmoon off`, `/deadmoon horde`.
 
 `LRRP_GhostHunting` и `ricx_ghostship` содержат Cfx escrow-файлы (`FXAP`), поэтому их исходную логику нельзя безопасно переписать в этом пакете. Обвязка добавляет боссов и данж поверх них. Если нужна только новая boss-логика без оригинального квеста охоты, не запускайте `LRRP_GhostHunting`; координаты и модели боссов всё равно настраиваются в `lrrp_paranormal_merge/config.lua`.
 

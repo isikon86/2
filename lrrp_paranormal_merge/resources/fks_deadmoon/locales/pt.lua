@@ -1,0 +1,28 @@
+Locales = Locales or {}
+
+Locales.pt = {
+    title         = 'Lua Morta',
+    started       = 'A Lua Morta nasceu... os mortos andam entre os vivos. Mira à cabeça!',
+    ended         = 'O sol nasce e os mortos voltam à terra.',
+    zombie        = 'Zombie',
+    search        = 'Revistar',
+    searching     = 'A revistar...',
+    found         = 'Encontraste: %s',
+    found_nothing = 'Não encontraste nada.',
+    already_looted = 'Este corpo já foi revistado.',
+    inv_full      = 'Não tens espaço para %s.',
+    horde         = 'Ouves gemidos por todo o lado... uma HORDA aproxima-se!',
+    cmd_help      = 'Lua Morta: on | off | auto | status | densidade <nivel> | horda [id] | som',
+    cmd_status    = 'Lua Morta: %s | modo: %s | hora: %s | densidade: %s',
+    fog_status    = 'Névoa vermelha: %s dias de jogo decorridos | dias até ao próximo evento: %s (0 = hoje).',
+    density_set   = 'Densidade alterada para: %s',
+    density_bad   = 'Nível inválido. Disponíveis: %s',
+    horde_sent    = 'Horda enviada para o jogador %s.',
+    horde_off     = 'O evento não está ativo (usa /deadmoon on primeiro).',
+    no_player     = 'Jogador não encontrado.',
+    sound_test    = 'A testar o som...',
+    sound_ok      = 'Som OK: estás a ouvir o grunhido?',
+    sound_fail    = 'O som falhou: %s',
+    cmd_on        = 'ativa',
+    cmd_off       = 'inativa',
+}

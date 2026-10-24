@@ -9,6 +9,9 @@ Config.NotifyEvent = nil -- e.g. 'vorp:TipRight' if your server uses a custom no
 -- entries to match the ship instances that are enabled on your server.
 Config.ShipDungeon = {
     enabled = true,
+    -- Use the supplied fks_deadmoon resource for ship zombies. Set false only
+    -- when testing the small built-in fallback spawner below.
+    useDeadmoon = true,
     radius = 65.0,
     spawnDistance = 90.0,
     waveDelayMs = 15000,

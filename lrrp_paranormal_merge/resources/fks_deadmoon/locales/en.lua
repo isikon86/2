@@ -1,0 +1,28 @@
+Locales = Locales or {}
+
+Locales.en = {
+    title         = 'Dead Moon',
+    started       = 'The Dead Moon has risen... the dead walk among the living. Aim for the head!',
+    ended         = 'The sun rises and the dead return to the ground.',
+    zombie        = 'Zombie',
+    search        = 'Search',
+    searching     = 'Searching...',
+    found         = 'You found: %s',
+    found_nothing = 'You found nothing.',
+    already_looted = 'This body was already searched.',
+    inv_full      = 'You have no room for %s.',
+    horde         = 'Moans all around you... a HORDE is coming!',
+    cmd_help      = 'Dead Moon: on | off | auto | status | density <level> | horde [id] | sound',
+    cmd_status    = 'Dead Moon: %s | mode: %s | time: %s | density: %s',
+    fog_status    = 'Red fog: %s in-game days elapsed | days until next event: %s (0 = today).',
+    density_set   = 'Density changed to: %s',
+    density_bad   = 'Invalid level. Available: %s',
+    horde_sent    = 'Horde sent to player %s.',
+    horde_off     = 'The event is not active (use /deadmoon on first).',
+    no_player     = 'Player not found.',
+    sound_test    = 'Testing the sound...',
+    sound_ok      = 'Sound OK: can you hear the groan?',
+    sound_fail    = 'Sound failed: %s',
+    cmd_on        = 'active',
+    cmd_off       = 'inactive',
+}

@@ -1,0 +1,4 @@
+TEOT Deadmoon v1.6.9 additional zombie sound variants
+The original zombie_01.wav–zombie_24.wav pack remains unchanged.
+zombie_25–zombie_32 are newly processed mixes/filters/pitch variants made from the included CC0/public-domain zombie recordings.
+Original sound-pack credit remains in README.md (Zombies Sound Pack by artisticdude, OpenGameArt, CC0).
