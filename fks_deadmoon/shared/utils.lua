@@ -10,11 +10,27 @@ local TEOTExtraZombieModels = {
 ZombieModels = {}
 for _, name in ipairs(Config.Zombies.models) do ZombieModels[joaat(name)] = name end
 
+-- Ghost boss models are registered for entity validation and cleanup
+-- compatibility, but remain outside Config.Zombies.models and the tier pools
+-- so ordinary zombie waves never select them.
+GhostModels = {}
+for _, boss in ipairs((Config.GhostBosses or {}).bosses or {}) do
+    local models = boss.models or { boss.model }
+    for _, name in ipairs(models) do
+        GhostModels[joaat(name)] = name
+        ZombieModels[joaat(name)] = name
+    end
+end
+
 HeadBones = {}
 for _, bone in ipairs(Config.Zombies.headBones) do HeadBones[bone] = true end
 
 function Utils.IsZombieModel(hash)
     return ZombieModels[hash] ~= nil
+end
+
+function Utils.IsGhostModel(hash)
+    return GhostModels[hash] ~= nil
 end
 
 -- '06:30' / 6 -> minutes of the day
