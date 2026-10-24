@@ -2,6 +2,7 @@
 
 local G = Config.GhostBosses or {}
 local spawned = {}
+local escorts = {}
 local defeated = {}
 
 local function notify(message)
@@ -33,6 +34,62 @@ local function removeBoss(index)
         DeletePed(ped)
     end
     spawned[index] = nil
+end
+
+local function removeEscort(index)
+    local group = escorts[index]
+    if group then
+        for i = #group, 1, -1 do
+            local ped = group[i]
+            if ped and DoesEntityExist(ped) then
+                SetEntityAsMissionEntity(ped, true, true)
+                DeleteEntity(ped)
+            end
+            table.remove(group, i)
+        end
+    end
+    escorts[index] = nil
+end
+
+local function spawnEscort(index, boss, playerPed)
+    local escort = boss.escort
+    if type(escort) ~= 'table' or (tonumber(escort.count) or 0) <= 0 then return end
+    local tier = Config.Tiers and Config.Tiers.levels and Config.Tiers.levels[escort.tier or 'tier2']
+    if not tier or type(tier.models) ~= 'table' then return end
+
+    escorts[index] = {}
+    local count = math.max(0, math.floor(tonumber(escort.count) or 0))
+    local radius = tonumber(escort.radius) or 6.0
+    for i = 1, count do
+        local angle = (i / count) * math.pi * 2.0
+        local pos = vector3(
+            boss.coords.x + math.cos(angle) * radius,
+            boss.coords.y + math.sin(angle) * radius,
+            boss.coords.z
+        )
+        local model = tier.models[math.random(1, #tier.models)]
+        local hash = loadModel(model)
+        if hash then
+            local ped = CreatePed(hash, pos.x, pos.y, pos.z,
+                boss.heading or 0.0, true, true, false, false)
+            SetModelAsNoLongerNeeded(hash)
+            if ped and ped ~= 0 and DoesEntityExist(ped) then
+                SetEntityAsMissionEntity(ped, true, true)
+                pcall(Citizen.InvokeNative, 0x283978A15512B2FE, ped, true)
+                local state = Entity(ped).state
+                state:set('fksZombie', true, true)
+                state:set('fksCorpse', false, true)
+                state:set('fksTier', escort.tier or 'tier2', true)
+                state:set('fksRunner', math.random(100) <= (tonumber(tier.runnerChance) or 0), true)
+                state:set('fksJumper', math.random(100) <= (tonumber(tier.jumperChance) or 0), true)
+                state:set('fksAggro', tonumber(tier.aggroRange) or 58.0, true)
+                if playerPed and DoesEntityExist(playerPed) then
+                    TaskCombatPed(ped, playerPed, 0, 16)
+                end
+                escorts[index][#escorts[index] + 1] = ped
+            end
+        end
+    end
 end
 
 local function spawnBoss(index, boss, playerPed)
@@ -71,6 +128,7 @@ local function spawnBoss(index, boss, playerPed)
     end
 
     spawned[index] = ped
+    spawnEscort(index, boss, playerPed)
     notify(('%s has manifested.'):format(boss.name))
 end
 
@@ -90,14 +148,17 @@ local function process()
     for index, boss in ipairs(G.bosses or {}) do
         local ped = spawned[index]
         if not active or defeated[index] then
+            removeEscort(index)
             removeBoss(index)
         elseif ped and DoesEntityExist(ped) then
             if IsEntityDead(ped) then
                 defeated[index] = true
                 TriggerServerEvent('fks-deadmoon:server:ghostBossDefeated', boss.id)
                 notify(('%s has been banished.'):format(boss.name))
+                removeEscort(index)
                 removeBoss(index)
             elseif #(playerCoords - GetEntityCoords(ped)) > (G.despawnDistance or 165.0) then
+                removeEscort(index)
                 removeBoss(index)
             end
         elseif #(playerCoords - boss.coords) <= (boss.spawnDistance or 110.0) then
@@ -115,12 +176,12 @@ end)
 
 AddStateBagChangeHandler('fksDeadmoonWeather', 'global', function(_, _, value)
     if value ~= true then
-        for index in pairs(spawned) do removeBoss(index) end
+        for index in pairs(spawned) do removeEscort(index); removeBoss(index) end
         defeated = {}
     end
 end)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    for index in pairs(spawned) do removeBoss(index) end
+    for index in pairs(spawned) do removeEscort(index); removeBoss(index) end
 end)

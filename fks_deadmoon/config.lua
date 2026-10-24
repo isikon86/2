@@ -461,9 +461,10 @@ Config.GhostBosses = {
             name = 'The Ferryman',
             model = 'A_M_M_UniCorpse_01',
             models = { 'A_M_M_UniCorpse_01', 'A_M_M_BHT_GHOST_01' },
-            coords = vector3(504.0, -1585.0, 39.0),
-            heading = 180.0,
+            coords = vector3(-335.61, -145.71, 50.01),
+            heading = 46.90,
             health = 1500,
+            escort = { count = 5, tier = 'tier2', radius = 6.0 },
         },
     },
 }
