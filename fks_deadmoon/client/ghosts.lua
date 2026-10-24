@@ -30,6 +30,16 @@ local function loadModel(names)
     return nil
 end
 
+local function createGhostPed(hash, coords, heading)
+    -- RedM artifacts differ: some accept the model as the first argument,
+    -- while ghost/story peds need the explicit RDR3 pedType (4).
+    local ped = CreatePed(hash, coords.x, coords.y, coords.z,
+        heading or 0.0, true, true, false, false)
+    if ped and ped ~= 0 and DoesEntityExist(ped) then return ped end
+    return CreatePed(4, hash, coords.x, coords.y, coords.z,
+        heading or 0.0, true, true, false, false)
+end
+
 local function removeBoss(index)
     local ped = spawned[index]
     if haze[index] and DoesParticleFxLoopedExist and DoesParticleFxLoopedExist(haze[index]) then
@@ -96,8 +106,7 @@ local function spawnEscort(index, boss, playerPed)
         local model = tier.models[math.random(1, #tier.models)]
         local hash = loadModel(model)
         if hash then
-            local ped = CreatePed(hash, pos.x, pos.y, pos.z,
-                boss.heading or 0.0, true, true, false, false)
+            local ped = createGhostPed(hash, pos, boss.heading)
             SetModelAsNoLongerNeeded(hash)
             if ped and ped ~= 0 and DoesEntityExist(ped) then
                 SetEntityAsMissionEntity(ped, true, true)
@@ -126,8 +135,7 @@ local function spawnBoss(index, boss, playerPed, position)
     end
 
     local spawnCoords = position or boss.coords
-    local ped = CreatePed(hash, spawnCoords.x, spawnCoords.y, spawnCoords.z,
-        boss.heading or 0.0, true, true, false, false)
+    local ped = createGhostPed(hash, spawnCoords, boss.heading)
     SetModelAsNoLongerNeeded(hash)
     if not ped or ped == 0 or not DoesEntityExist(ped) then
         print(('[fks-deadmoon] CreatePed failed for ghost %s using %s'):format(boss.id, tostring(modelName)))
