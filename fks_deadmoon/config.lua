@@ -470,7 +470,6 @@ Config.GhostBosses = {
             coords = vector3(-335.61, -145.71, 50.01),
             heading = 46.90,
             health = 1500,
-            escort = { count = 5, tier = 'tier2', radius = 6.0 },
         },
         {
             id = 'marsh_widow',
@@ -480,7 +479,6 @@ Config.GhostBosses = {
             coords = vector3(1810.0, -1830.0, 43.0),
             heading = 90.0,
             health = 1100,
-            escort = { count = 3, tier = 'tier2', radius = 5.0 },
         },
         {
             id = 'gallows_miner',
@@ -490,7 +488,6 @@ Config.GhostBosses = {
             coords = vector3(2930.0, 1300.0, 44.0),
             heading = 270.0,
             health = 1800,
-            escort = { count = 5, tier = 'tier3', radius = 7.0 },
         },
         {
             id = 'blackwater_drifter',
@@ -500,7 +497,6 @@ Config.GhostBosses = {
             coords = vector3(-813.0, -1324.0, 43.0),
             heading = 0.0,
             health = 1400,
-            escort = { count = 4, tier = 'tier2', radius = 6.0 },
         },
         {
             id = 'red_ridge_preacher',
@@ -510,7 +506,6 @@ Config.GhostBosses = {
             coords = vector3(-281.0, 783.0, 119.0),
             heading = 180.0,
             health = 1600,
-            escort = { count = 5, tier = 'tier3', radius = 7.0 },
         },
         {
             id = 'drowned_bride',
@@ -520,7 +515,6 @@ Config.GhostBosses = {
             coords = vector3(646.265, -1775.798, 39.839),
             heading = 126.999,
             health = 1300,
-            escort = { count = 6, tier = 'tier2', radius = 8.0 },
         },
         {
             id = 'tumbleweed_watchman',
@@ -530,7 +524,6 @@ Config.GhostBosses = {
             coords = vector3(-5500.0, -2930.0, -2.0),
             heading = 45.0,
             health = 1700,
-            escort = { count = 4, tier = 'tier3', radius = 6.0 },
         },
     },
 }
