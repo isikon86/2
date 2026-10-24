@@ -12,14 +12,18 @@ local function notify(message)
     end
 end
 
-local function loadModel(name)
-    local hash = type(name) == 'number' and name or joaat(name)
-    if not IsModelValid(hash) then return nil end
-    RequestModel(hash)
-    local deadline = GetGameTimer() + 10000
-    while not HasModelLoaded(hash) and GetGameTimer() < deadline do Wait(0) end
-    if not HasModelLoaded(hash) then return nil end
-    return hash
+local function loadModel(names)
+    names = type(names) == 'table' and names or { names }
+    for _, name in ipairs(names) do
+        local hash = type(name) == 'number' and name or joaat(name)
+        if IsModelValid(hash) then
+            RequestModel(hash)
+            local deadline = GetGameTimer() + 10000
+            while not HasModelLoaded(hash) and GetGameTimer() < deadline do Wait(0) end
+            if HasModelLoaded(hash) then return hash, name end
+        end
+    end
+    return nil
 end
 
 local function removeBoss(index)
@@ -32,18 +36,19 @@ local function removeBoss(index)
 end
 
 local function spawnBoss(index, boss, playerPed)
-    local hash = loadModel(boss.model)
+    local hash, modelName = loadModel(boss.models or boss.model)
     if not hash then
         print(('[fks-deadmoon] ghost model unavailable: %s'):format(tostring(boss.model)))
         return
     end
 
     local ped = CreatePed(hash, boss.coords.x, boss.coords.y, boss.coords.z,
-        boss.heading or 0.0, true, true, true)
+        boss.heading or 0.0, true, true, false, false)
     SetModelAsNoLongerNeeded(hash)
     if not ped or ped == 0 or not DoesEntityExist(ped) then return end
 
     SetEntityAsMissionEntity(ped, true, true)
+    SetEntityAlpha(ped, 185, false)
     SetEntityMaxHealth(ped, boss.health or 1000)
     SetEntityHealth(ped, boss.health or 1000)
     SetPedCanRagdoll(ped, true)
