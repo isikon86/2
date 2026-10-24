@@ -50,7 +50,7 @@ local function createGhostFromModels(models, coords, heading)
             if ped and ped ~= 0 and DoesEntityExist(ped) then
                 return ped, hash, name
             end
-            print(('[fks-deadmoon] CreatePed rejected ghost model %s; trying fallback'):format(tostring(name)))
+            print(('[fks-deadmoon] CreatePed rejected ghost model %s, trying fallback'):format(tostring(name)))
         end
     end
     return nil, nil, nil
