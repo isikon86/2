@@ -42,16 +42,18 @@ local function removeBoss(index)
 end
 
 local function attachHaze(index, boss, ped)
-    if not boss.ptfxAsset or not boss.ptfxName then return end
+    local asset = boss.ptfxAsset or G.ptfxAsset
+    local effect = boss.ptfxName or G.ptfxName
+    if not asset or not effect then return end
     if not RequestNamedPtfxAsset or not HasNamedPtfxAssetLoaded
         or not UseParticleFxAsset or not StartParticleFxLoopedOnEntity then return end
-    RequestNamedPtfxAsset(boss.ptfxAsset)
+    RequestNamedPtfxAsset(asset)
     local deadline = GetGameTimer() + 5000
-    while not HasNamedPtfxAssetLoaded(boss.ptfxAsset) and GetGameTimer() < deadline do Wait(0) end
-    if not HasNamedPtfxAssetLoaded(boss.ptfxAsset) then return end
-    UseParticleFxAsset(boss.ptfxAsset)
+    while not HasNamedPtfxAssetLoaded(asset) and GetGameTimer() < deadline do Wait(0) end
+    if not HasNamedPtfxAssetLoaded(asset) then return end
+    UseParticleFxAsset(asset)
     haze[index] = StartParticleFxLoopedOnEntity(
-        boss.ptfxName, ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, false, false, false
+        effect, ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, false, false, false
     )
 end
 

@@ -13,6 +13,10 @@ ensure fks_deadmoon
 Внутри уже находятся зомби, призрачные боссы, поезд и корабельные данжи.
 `LRRP_GhostHunting` и `ricx_ghostship` отдельно запускать не нужно.
 
+В Deadmoon настроено 8 оригинальных боссов: Agnes Dowd, The Ferryman, The Marsh Widow,
+The Gallows Miner, The Blackwater Drifter, The Red Ridge Preacher, The Drowned Bride и
+The Tumbleweed Watchman. Шесть новых имён и их легенды — авторская часть объединённого ресурса.
+
 - `client/ghosts.lua` — боссы-призраки во время события 7-го игрового дня;
 - `client/ghost_train.lua` — поезд с 00:00 до 03:00 каждой ночи;
 - `client/ghost_ship.lua` — объекты кораблей;
