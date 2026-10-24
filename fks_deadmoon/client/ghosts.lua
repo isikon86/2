@@ -58,7 +58,9 @@ local function spawnBoss(index, boss, playerPed)
     SetPedCombatMovement(ped, 3)
     SetPedCombatRange(ped, 2)
     SetPedAccuracy(ped, 35)
-    SetPedAsEnemy(ped, true)
+    -- SetPedAsEnemy is not exposed by every RedM artifact. Combat task and
+    -- combat attributes already make the boss hostile, so keep this optional.
+    if SetPedAsEnemy then SetPedAsEnemy(ped, true) end
     SetPedKeepTask(ped, true)
     if playerPed and DoesEntityExist(playerPed) then
         TaskCombatPed(ped, playerPed, 0, 16)
