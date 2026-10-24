@@ -5,6 +5,7 @@ local spawned = {}
 local escorts = {}
 local haze = {}
 local defeated = {}
+local spawnBlockedUntil = {}
 
 local function notify(message)
     if Bridge and Bridge.Notify then
@@ -31,7 +32,7 @@ end
 local function removeBoss(index)
     local ped = spawned[index]
     if haze[index] and DoesParticleFxLoopedExist and DoesParticleFxLoopedExist(haze[index]) then
-        StopParticleFxLooped(haze[index], false)
+        if StopParticleFxLooped then StopParticleFxLooped(haze[index], false) end
     end
     haze[index] = nil
     if ped and DoesEntityExist(ped) then
@@ -78,6 +79,9 @@ local function spawnEscort(index, boss, playerPed)
     local tier = Config.Tiers and Config.Tiers.levels and Config.Tiers.levels[escort.tier or 'tier2']
     if not tier or type(tier.models) ~= 'table' then return end
 
+    -- Never overwrite a live group: doing that would orphan the old peds and
+    -- create another group every time the boss entity is recreated.
+    removeEscort(index)
     escorts[index] = {}
     local count = math.max(0, math.floor(tonumber(escort.count) or 0))
     local radius = tonumber(escort.radius) or 6.0
@@ -148,9 +152,12 @@ local function spawnBoss(index, boss, playerPed)
         TaskCombatPed(ped, playerPed, 0, 16)
     end
 
+    -- Register the boss before attaching optional effects. If a particle native
+    -- fails on an older artifact, the next tick must not create another escort.
     spawned[index] = ped
     attachHaze(index, boss, ped)
     spawnEscort(index, boss, playerPed)
+    spawnBlockedUntil[index] = GetGameTimer() + 10000
     notify(('%s has manifested.'):format(boss.name))
 end
 
@@ -183,6 +190,18 @@ local function process()
                 removeEscort(index)
                 removeBoss(index)
             end
+        elseif not ped then
+            if GetGameTimer() >= (spawnBlockedUntil[index] or 0)
+                and #(playerCoords - boss.coords) <= (boss.spawnDistance or 110.0) then
+                removeEscort(index)
+                spawnBoss(index, boss, playerPed)
+            end
+        elseif not DoesEntityExist(ped) then
+            -- The boss can disappear during model/streaming cleanup. Always
+            -- remove its escort before allowing a fresh spawn attempt.
+            removeEscort(index)
+            spawned[index] = nil
+            spawnBlockedUntil[index] = GetGameTimer() + 10000
         elseif #(playerCoords - boss.coords) <= (boss.spawnDistance or 110.0) then
             spawnBoss(index, boss, playerPed)
         end
