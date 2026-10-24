@@ -48,7 +48,11 @@ local function spawnBoss(index, boss, playerPed)
     if not ped or ped == 0 or not DoesEntityExist(ped) then return end
 
     SetEntityAsMissionEntity(ped, true, true)
-    SetEntityAlpha(ped, 185, false)
+    if SetEntityVisible then SetEntityVisible(ped, true, false) end
+    if ResetEntityAlpha then ResetEntityAlpha(ped) end
+    if SetEntityAlpha then SetEntityAlpha(ped, 255, false) end
+    -- Give corpse fallback models a visible outfit, matching the zombie spawner.
+    pcall(Citizen.InvokeNative, 0x283978A15512B2FE, ped, true)
     SetEntityMaxHealth(ped, boss.health or 1000)
     SetEntityHealth(ped, boss.health or 1000)
     SetPedCanRagdoll(ped, true)

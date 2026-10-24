@@ -450,8 +450,8 @@ Config.GhostBosses = {
         {
             id = 'mary',
             name = 'Mary Hargrove',
-            model = 'A_F_M_BHT_GHOST_01',
-            models = { 'A_F_M_BHT_GHOST_01', 'A_F_M_UniCorpse_01' },
+            model = 'A_F_M_UniCorpse_01',
+            models = { 'A_F_M_UniCorpse_01', 'A_F_M_BHT_GHOST_01' },
             coords = vector3(2945.2383, 517.5995, 45.3310),
             heading = 11.8799,
             health = 1200,
@@ -459,8 +459,8 @@ Config.GhostBosses = {
         {
             id = 'ferryman',
             name = 'The Ferryman',
-            model = 'A_M_M_BHT_GHOST_01',
-            models = { 'A_M_M_BHT_GHOST_01', 'A_M_M_UniCorpse_01' },
+            model = 'A_M_M_UniCorpse_01',
+            models = { 'A_M_M_UniCorpse_01', 'A_M_M_BHT_GHOST_01' },
             coords = vector3(504.0, -1585.0, 39.0),
             heading = 180.0,
             health = 1500,
