@@ -3,6 +3,7 @@
 local G = Config.GhostBosses or {}
 local spawned = {}
 local escorts = {}
+local haze = {}
 local defeated = {}
 
 local function notify(message)
@@ -29,11 +30,29 @@ end
 
 local function removeBoss(index)
     local ped = spawned[index]
+    if haze[index] and DoesParticleFxLoopedExist and DoesParticleFxLoopedExist(haze[index]) then
+        StopParticleFxLooped(haze[index], false)
+    end
+    haze[index] = nil
     if ped and DoesEntityExist(ped) then
         SetEntityAsMissionEntity(ped, true, true)
         DeletePed(ped)
     end
     spawned[index] = nil
+end
+
+local function attachHaze(index, boss, ped)
+    if not boss.ptfxAsset or not boss.ptfxName then return end
+    if not RequestNamedPtfxAsset or not HasNamedPtfxAssetLoaded
+        or not UseParticleFxAsset or not StartParticleFxLoopedOnEntity then return end
+    RequestNamedPtfxAsset(boss.ptfxAsset)
+    local deadline = GetGameTimer() + 5000
+    while not HasNamedPtfxAssetLoaded(boss.ptfxAsset) and GetGameTimer() < deadline do Wait(0) end
+    if not HasNamedPtfxAssetLoaded(boss.ptfxAsset) then return end
+    UseParticleFxAsset(boss.ptfxAsset)
+    haze[index] = StartParticleFxLoopedOnEntity(
+        boss.ptfxName, ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, false, false, false
+    )
 end
 
 local function removeEscort(index)
@@ -128,6 +147,7 @@ local function spawnBoss(index, boss, playerPed)
     end
 
     spawned[index] = ped
+    attachHaze(index, boss, ped)
     spawnEscort(index, boss, playerPed)
     notify(('%s has manifested.'):format(boss.name))
 end
