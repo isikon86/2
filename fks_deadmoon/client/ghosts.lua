@@ -271,6 +271,37 @@ RegisterNetEvent('fks-deadmoon:client:ghostTestClear', function()
     testLocations = {}
 end)
 
+RegisterNetEvent('fks-deadmoon:client:ghostDiag', function(id)
+    print('^5[fks-deadmoon] ghost diagnostic start^0')
+    print(('[fks-deadmoon] resource=%s state=%s'):format(GetCurrentResourceName(), GetResourceState(GetCurrentResourceName())))
+    for index, boss in ipairs(G.bosses or {}) do
+        if not id or id == boss.id then
+            print(('[fks-deadmoon] boss[%d] id=%s name=%s'):format(index, boss.id, boss.name))
+            for _, name in ipairs(boss.models or { boss.model }) do
+                local hash = joaat(name)
+                local valid = IsModelValid(hash)
+                local inCd = 'n/a'
+                if IsModelInCdimage then
+                    local ok, value = pcall(IsModelInCdimage, hash)
+                    inCd = ok and tostring(value) or 'native-error'
+                end
+                local loaded = false
+                if valid then
+                    RequestModel(hash)
+                    local deadline = GetGameTimer() + 3000
+                    while not HasModelLoaded(hash) and GetGameTimer() < deadline do Wait(0) end
+                    loaded = HasModelLoaded(hash)
+                    SetModelAsNoLongerNeeded(hash)
+                end
+                print(('[fks-deadmoon] model=%s hash=%s valid=%s inCdimage=%s loaded=%s'):format(
+                    name, tostring(hash), tostring(valid), inCd, tostring(loaded)
+                ))
+            end
+        end
+    end
+    print('^5[fks-deadmoon] ghost diagnostic end^0')
+end)
+
 AddStateBagChangeHandler('fksDeadmoonWeather', 'global', function(_, _, value)
     if value ~= true then
         for index in pairs(spawned) do removeEscort(index); removeBoss(index) end

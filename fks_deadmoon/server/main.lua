@@ -408,6 +408,11 @@ RegisterCommand(Config.Command, function(src, args)
             local id = args[3]
             TriggerClientEvent('fks-deadmoon:client:ghostTest', src, id)
             return Reply(src, ('ghost test: %s'):format(id or 'first boss'))
+        elseif mode == 'diag' or mode == 'diagnostic' then
+            local id = args[3]
+            print(('[fks-deadmoon] ghost diagnostic requested by %s for %s'):format(src, id or 'all'))
+            TriggerClientEvent('fks-deadmoon:client:ghostDiag', src, id)
+            return Reply(src, ('ghost diagnostic: %s (check client F8 console)'):format(id or 'all'))
         elseif mode == 'on' then
             weatherForced = true
         elseif mode == 'off' then
@@ -416,7 +421,7 @@ RegisterCommand(Config.Command, function(src, args)
             weatherForced = nil
             TriggerClientEvent('fks-deadmoon:client:ghostTestClear', src)
         else
-            return Reply(src, '/deadmoon ghost on | off | auto | test [id]')
+            return Reply(src, '/deadmoon ghost on | off | auto | test [id] | diag [id]')
         end
         TickWeather()
         return Reply(src, ('ghost event: %s'):format(weatherForced == nil and 'auto' or (weatherForced and 'on' or 'off')))
