@@ -40,6 +40,22 @@ local function createGhostPed(hash, coords, heading)
         heading or 0.0, true, true, false, false)
 end
 
+local function createGhostFromModels(models, coords, heading)
+    models = type(models) == 'table' and models or { models }
+    for _, name in ipairs(models) do
+        local hash = loadModel({ name })
+        if hash then
+            local ped = createGhostPed(hash, coords, heading)
+            SetModelAsNoLongerNeeded(hash)
+            if ped and ped ~= 0 and DoesEntityExist(ped) then
+                return ped, hash, name
+            end
+            print(('[fks-deadmoon] CreatePed rejected ghost model %s; trying fallback'):format(tostring(name)))
+        end
+    end
+    return nil, nil, nil
+end
+
 local function removeBoss(index)
     local ped = spawned[index]
     if haze[index] and DoesParticleFxLoopedExist and DoesParticleFxLoopedExist(haze[index]) then
@@ -104,7 +120,7 @@ local function spawnEscort(index, boss, playerPed)
             boss.coords.z
         )
         local model = tier.models[math.random(1, #tier.models)]
-        local hash = loadModel(model)
+            local hash = loadModel(model)
         if hash then
             local ped = createGhostPed(hash, pos, boss.heading)
             SetModelAsNoLongerNeeded(hash)
@@ -128,17 +144,10 @@ local function spawnEscort(index, boss, playerPed)
 end
 
 local function spawnBoss(index, boss, playerPed, position)
-    local hash, modelName = loadModel(boss.models or boss.model)
-    if not hash then
-        print(('[fks-deadmoon] ghost model unavailable: %s'):format(tostring(boss.model)))
-        return
-    end
-
     local spawnCoords = position or boss.coords
-    local ped = createGhostPed(hash, spawnCoords, boss.heading)
-    SetModelAsNoLongerNeeded(hash)
-    if not ped or ped == 0 or not DoesEntityExist(ped) then
-        print(('[fks-deadmoon] CreatePed failed for ghost %s using %s'):format(boss.id, tostring(modelName)))
+    local ped, hash, modelName = createGhostFromModels(boss.models or boss.model, spawnCoords, boss.heading)
+    if not ped then
+        print(('[fks-deadmoon] ghost model unavailable: %s'):format(tostring(boss.model)))
         return
     end
 
