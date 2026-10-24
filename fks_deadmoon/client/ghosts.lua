@@ -7,6 +7,7 @@ local haze = {}
 local defeated = {}
 local spawnBlockedUntil = {}
 local testLocations = {}
+local attempted = {}
 
 local function notify(message)
     if Bridge and Bridge.Notify then
@@ -35,10 +36,10 @@ local function createGhostPed(hash, coords, heading)
     -- safely so one incompatible native does not abort the ghost thread.
     local h = heading or 0.0
     local attempts = {
-        function() return CreatePed(hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
-        function() return CreatePed(4, hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
         function() return CreatePed(hash, coords.x, coords.y, coords.z, h, false, true, false, false) end,
         function() return CreatePed(4, hash, coords.x, coords.y, coords.z, h, false, true, false, false) end,
+        function() return CreatePed(hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
+        function() return CreatePed(4, hash, coords.x, coords.y, coords.z, h, true, true, false, false) end,
     }
     if CreatePed_2 then
         attempts[#attempts + 1] = function()
@@ -156,6 +157,8 @@ local function spawnEscort(index, boss, playerPed)
 end
 
 local function spawnBoss(index, boss, playerPed, position)
+    if attempted[index] then return end
+    attempted[index] = true
     local spawnCoords = position or boss.coords
     local ped, hash, modelName = createGhostFromModels(boss.models or boss.model, spawnCoords, boss.heading)
     if not ped then
@@ -214,6 +217,7 @@ local function process()
         if (not active and not testPosition) or defeated[index] then
             removeEscort(index)
             removeBoss(index)
+            attempted[index] = nil
         elseif ped and DoesEntityExist(ped) then
             if IsEntityDead(ped) then
                 defeated[index] = true
@@ -259,6 +263,7 @@ RegisterNetEvent('fks-deadmoon:client:ghostTest', function(id)
         if not id or id == boss.id then
             testLocations[index] = testCoords
             defeated[index] = nil
+            attempted[index] = nil
             removeEscort(index)
             removeBoss(index)
             print(('[fks-deadmoon] ghost test armed: %s at %.2f %.2f %.2f'):format(
