@@ -482,3 +482,21 @@ Config.GhostTrain = {
         vector3(1248.0, -1297.0, 76.0),
     },
 }
+
+-- Ship wrecks are part of this resource, so no separate ricx_ghostship
+-- resource is required. The same coordinates are also registered below in
+-- Config.CitySpawns as zombie dungeon zones.
+Config.GhostShips = {
+    enabled = true,
+    model = 'mp005_s_mp_boatsunk_wreck01',
+    ships = {
+        {
+            coords = vector3(506.333, -1585.397, 38.789),
+            rotation = vector3(0.0, 0.0, 0.0),
+        },
+        {
+            coords = vector3(646.265, -1775.798, 39.839),
+            rotation = vector3(-0.957, 4.080, 126.999),
+        },
+    },
+}

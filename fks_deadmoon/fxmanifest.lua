@@ -24,6 +24,7 @@ client_scripts {
     'client/zombies.lua',
     'client/ghosts.lua',
     'client/ghost_train.lua',
+    'client/ghost_ship.lua',
     'client/tier_combat.lua',
     'client/loot.lua',
     'client/sounds.lua',
